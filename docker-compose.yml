@@ -1,0 +1,32 @@
+services:
+  nest-app:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - '3000:4000'
+    environment:
+      - PORT=${PORT}
+    command: sh -c "yarn start:prod"
+  postgres:
+    image: postgres:17.5
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgres/data
+  volumes:
+    - postgres_data
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl    volumes:
+      - postgres_data
